@@ -1,8 +1,9 @@
 const Router = require('express')
-
+const type = require('../controllers/type')
 const router = new Router()
 
-router.post('/')
-router.get('/')
+
+router.post('/', type.create)
+router.get('/', type.getAll)
 
 module.exports = router
