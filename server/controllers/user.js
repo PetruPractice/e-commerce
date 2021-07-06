@@ -13,7 +13,7 @@ const jwtGenerator = (id, email, role) => {
 }
 
 class userController {
-    async registration(req, res) {
+    async registration(req, res, next) {
         const {email, password, role} = req.body
         if (!email || !password) {
             return next(ApiError.badRequest('Invalid email or password'))
@@ -30,7 +30,7 @@ class userController {
         return res.json(token)
     }
     
-    async login(req, res, role) {
+    async login(req, res, next) {
         const {email, password} = req.body
         const user = await User.findOne({where: {email}})
         if (!user) {
@@ -45,12 +45,16 @@ class userController {
         return res.json({token})
     }
 
-    async check(req, res, next) {
-        // const {id} = req.query
+    async check(req, res, next) { // generates a new token and returns it to client
+        // const {id} = req.query // for a simple check
         // if(!id) {
         //     return next(ApiError.badRequest('No id'))
         // }
         // res.json(id)
+
+        const token = jwtGenerator(req.user.id, req.user.email, req.user.role)
+        return res.json({token})
+
     }
 }
 
